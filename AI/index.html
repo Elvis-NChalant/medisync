@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Health Prediction</title>
+    <script>
+        async function submitForm(event) {
+            event.preventDefault();
+
+            const formData = {
+                temperature: document.getElementById('temperature').value,
+                ecg: document.getElementById('ecg').value,
+                pulse: document.getElementById('pulse').value
+            };
+
+            try {
+                const response = await fetch('/predict', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const result = await response.json();
+                document.getElementById('result').textContent = `Predicted Health Score: ${result.predicted_score}`;
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1>Health Prediction Form</h1>
+    <form onsubmit="submitForm(event)">
+        <label for="temperature">Temperature:</label>
+        <input type="text" id="temperature" name="temperature" required><br>
+        <label for="ecg">ECG:</label>
+        <input type="text" id="ecg" name="ecg" required><br>
+        <label for="pulse">Pulse:</label>
+        <input type="text" id="pulse" name="pulse" required><br>
+        <input type="submit" value="Predict">
+    </form>
+    <h2 id="result"></h2>
+</body>
+</html>
